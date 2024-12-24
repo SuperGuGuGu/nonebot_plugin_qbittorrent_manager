@@ -175,6 +175,11 @@ pyrightconfig.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 /.idea/
-/.gitignore
+.gitignore
 /Developer/
 /.venv/
+/venv/
+/venv-10/
+/venv-11/
+/venv-12/
+/venv-13/
