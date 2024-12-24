@@ -1,5 +1,5 @@
 from nonebot import logger
-logger.info("ping")  # test2
+logger.info("ping")  # test3
 from nonebot.plugin import PluginMetadata
 
 _plugin_meta__ = PluginMetadata(
