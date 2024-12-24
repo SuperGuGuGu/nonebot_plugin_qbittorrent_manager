@@ -12,6 +12,8 @@ keywords = ["nonebot2", "qbittorrent"]
 [tool.poetry.dependencies]
 python = ">=3.10"
 httpx = ">=0.23"
+matplotlib = ">=3.9.2"
+nonebot-plugin-send-anything-anywhere = ">=0.7.0"
 
 
 [build-system]
