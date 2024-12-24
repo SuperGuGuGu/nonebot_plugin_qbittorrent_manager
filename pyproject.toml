@@ -3,14 +3,13 @@ name = "nonebot-plugin-qbittorrent-manager"
 version = "0.0.1"
 description = "qbittorrent管理器"
 authors = ["SuperGuGuGu <from89917812@163.com>"]
+license = "MIT License"
 readme = "README.md"
-packages = [{include = "nonebot-plugin-qbittorrent-manager"}]
-repository = "https://github.com/SuperGuGuGu/nonebot-plugin-qbittorrent-manager"
-keywords = ["nonebot2", "qbittorrent"]
 
 [tool.poetry.dependencies]
-python = ">=3.9"
+python = ">=3.10"
 httpx = ">=0.23"
+
 
 [build-system]
 requires = ["poetry-core"]
