@@ -1,2 +1,2 @@
 from nonebot import logger
-logger.info("ping")
+logger.info("ping")  # test
