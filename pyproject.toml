@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-qbittorrent-manager"
-version = "0.0.2b1"
+version = "0.1.1b2"
 description = "qbittorrent管理器"
 authors = ["SuperGuGuGu <from89917812@163.com>"]
 license = "MIT License"
@@ -12,7 +12,8 @@ keywords = ["nonebot2", "qbittorrent"]
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
 httpx = ">=0.23"
-matplotlib = ">=3.9.2"
+pillow = ">=11.0.0"
+matplotlib = ">=3.9.0"
 nonebot-plugin-send-anything-anywhere = ">=0.7.0"
 
 
