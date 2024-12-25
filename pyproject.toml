@@ -5,7 +5,7 @@ description = "qbittorrent管理器"
 authors = ["SuperGuGuGu <from89917812@163.com>"]
 license = "MIT License"
 readme = "README.md"
-packages = [{include = "nonebot-plugin-qbittorrent-manager"}]
+packages = [{include = "nonebot_plugin_qbittorrent_manager"}]
 repository = "https://github.com/SuperGuGuGu/nonebot-plugin-qbittorrent-manager"
 keywords = ["nonebot2", "qbittorrent"]
 
