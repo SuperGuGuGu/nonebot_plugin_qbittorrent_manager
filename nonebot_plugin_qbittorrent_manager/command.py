@@ -1,4 +1,6 @@
+from nonebot import logger
 from .config import menu_data
+from .qb_api import call_api
 
 
 async def command_help():

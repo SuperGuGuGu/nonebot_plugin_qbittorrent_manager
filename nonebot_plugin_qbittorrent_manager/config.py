@@ -2,8 +2,12 @@ from nonebot import get_plugin_config
 from pydantic import BaseModel, field_validator
 
 
+# 我也不知道这个注释有什么用，pyc加的，删了它会骂我
+# noinspection PyNestedDecorators
 class Config(BaseModel):
     qbm_url: str
+    qbm_username: str
+    qbm_password: str
     qbm_enable_group: list[str] = []
     qbm_enable_private: list[str] = []
     qbm_send_text: bool = False
@@ -39,6 +43,8 @@ menu_data = [
 ]
 plugin_config = get_plugin_config(Config)
 qb_url = plugin_config.qbm_url
+qbm_username = plugin_config.qbm_username
+qbm_password = plugin_config.qbm_password
 enable_group = plugin_config.qbm_enable_group
 enable_private = plugin_config.qbm_enable_private
 send_text = plugin_config.qbm_send_text
