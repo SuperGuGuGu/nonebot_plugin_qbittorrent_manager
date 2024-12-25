@@ -2,6 +2,7 @@ import httpx
 from nonebot import logger
 from .config import qbm_username, qbm_password
 from .tools import qbm_cache, basepath, qb_url
+from httpx import codes as status_code
 
 
 async def client(path, post_data=None, timeout=10):
@@ -20,7 +21,7 @@ async def client(path, post_data=None, timeout=10):
                 timeout=timeout,
                 cookies=qbm_cache.get("cookies")
             )
-    if data.status_code == 200:
+    if data.status_code == status_code.OK:
         return data
     logger.error(f"url: {qb_url}{path}")
     logger.error(f"data: {data.text}")
@@ -50,11 +51,12 @@ async def login():
     return "succeed"
 
 
-async def call_api(path: str, params: dict = None):
+async def call_api(path: str, params: dict = None, post_data: dict = None):
     """
     请求qb的api
     :param path:
     :param params:
+    :param post_data:
     :return:
     """
     logger.debug(f"call_api: {path}")
@@ -72,7 +74,7 @@ async def call_api(path: str, params: dict = None):
             path += f"{p}={params[p]}&"
         path = path.removesuffix("&")
 
-    return await client(path)
+    return await client(path, post_data=post_data)
 
 
 
