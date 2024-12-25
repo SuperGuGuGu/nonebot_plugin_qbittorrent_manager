@@ -1,6 +1,7 @@
+import json
 import re
 from nonebot import logger
-from .config import menu_data
+from .config import menu_data, state_name
 from .qb_api import call_api
 
 
@@ -71,3 +72,64 @@ async def command_download(args: str):
     return_msg = f"提交{task_data['num']}个任务，成功{task_data['succeed']}个"
 
     return return_msg
+
+
+async def command_download_list(args: str):
+    # 解析列表参数
+    list_data = {}
+    args_list = args.split(" ")
+    jump_num = 0
+    for i, arg in enumerate(args_list):
+        if jump_num > 0:
+            jump_num -= 1
+        elif arg in ["-tag", "-t"]:
+            list_data["tag"] = args_list[i + 1]
+            jump_num += 1
+        elif arg in ["-savepath", "-path", "-p"]:
+            return "查看列表不支持文件夹参数"
+        elif arg in ["-category", "-c"]:
+            list_data["category"] = args_list[i + 1]
+            jump_num += 1
+
+    # 获取列表
+    try:
+        data = await call_api("/api/v2/torrents/info", post_data=list_data)
+        logger.success("获取列表成功")
+    except Exception as e:
+        logger.error(e)
+        return "api返回错误"
+
+    # 排序列表
+    download_list = json.loads(data.text)
+    download_data = {}
+    category_list = []  # 分类列表
+    for data in download_list:
+        num = 5
+        torrent_id = data["hash"]
+        for i in range(len(data["hash"]) - num):
+            if data["hash"][:num + i] not in download_data.keys():
+                torrent_id = data["hash"][:num + i]
+                break
+        if data["completed"] != 0:
+            data["download_state"] = data["completed"] / (data["completed"] + data["amount_left"]) * 100
+        else:
+            data["download_state"] = 0
+
+        download_data[torrent_id] = data
+        if data["category"] not in category_list:
+            category_list.append(data["category"])
+    download_data = dict(sorted(download_data.items(), key=lambda item: item[1]['download_state'], reverse=True))
+    message = ""
+    for category in category_list:
+        if category == "":
+            category = "未分类"
+        message += f"{category}: \n"
+        for torrent_id in download_data:
+            if category == download_data[torrent_id]['category']:
+                message += f"  {torrent_id}: "
+                message += f"{int(download_data[torrent_id]['download_state'])}% "
+                message += f"{state_name[download_data[torrent_id]['state']]}\n"
+
+    if message == "":
+        return "暂无任务"
+    return message

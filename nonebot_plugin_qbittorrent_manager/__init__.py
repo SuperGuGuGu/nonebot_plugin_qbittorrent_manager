@@ -6,7 +6,7 @@ from nonebot.adapters import Event
 
 from .tools import save_image
 from .config import Config, menu_data
-from .command import command_help, command_download
+from .command import command_help, command_download, command_download_list
 
 require("nonebot_plugin_saa")
 from nonebot_plugin_saa import Image as saaImage, MessageFactory
@@ -64,6 +64,26 @@ async def download_msg(event: Event):
 
     await send(msg)
     await download_cmd.finish()
+
+
+download_list_cmd = on_command("qb列表", rule=to_me(), priority=10, block=False)
+
+
+@download_list_cmd.handle()
+async def download_msg(event: Event):
+    if not event.get_type().startswith("message"):
+        await download_list_cmd.finish()
+    msg: str = str(event.get_message().copy())
+    if msg == "":
+        await download_list_cmd.finish()
+
+    command_prefix = f"{msg.split('qb下载')[0]}qb下载"
+    args = msg.removeprefix(command_prefix)
+
+    msg = await command_download_list(args=args)
+
+    await send(msg)
+    await download_list_cmd.finish()
 
 
 async def send(msg):
