@@ -17,7 +17,7 @@ async def command_download(args: str):
         return "请添加要下载的内容，例：" + '"qb下载 xxx"'
 
     # 解析链接
-    download_data = {"urls": []}
+    download_data = {"urls": {}}
     args_list = args.split(" ")
     jump_num = 0
     for i, arg in enumerate(args_list):
@@ -33,11 +33,18 @@ async def command_download(args: str):
             download_data["category"] = args_list[i + 1]
             jump_num += 1
         else:
-            # magnet_links = re.findall(r'[a-zA-Z0-9]{40}[a-zA-Z0-9&=.\[\]\-]*', arg)
-            magnet_links = re.findall(r'[a-zA-Z0-9]{40}', arg)
+            magnet_links: list[str] = re.findall(r'[a-zA-Z0-9]{40}[a-zA-Z0-9&=.\[\]\-]*', arg)
+            # magnet_links = re.findall(r'[a-zA-Z0-9]{40}', arg)
             for link in magnet_links:
-                if link not in download_data["links"]:
-                    download_data["urls"].append(link)
+                if "&" in link:
+                    l = link.split("&")[0]
+                    args = link.removeprefix(f"{l}&")
+                    link = l
+                else:
+                    args = ""
+
+                if link not in download_data["urls"].keys():
+                    download_data["urls"][link] = args
                     logger.debug(f"解析到链接：{link}")
 
     # 提交任务
@@ -55,6 +62,10 @@ async def command_download(args: str):
             post_data["tag"] = download_data.get("tag")
         if download_data.get("savepath") is not None:
             post_data["savepath"] = download_data.get("savepath")
+        if download_data["urls"][url] != "":
+            # 解析链接参数
+            # logger.debug(f"解析链接参数: {download_data['urls'][url]}")
+            pass
         try:
             data = await call_api("/api/v2/torrents/add", post_data=post_data)
             if data.text == "Ok.":

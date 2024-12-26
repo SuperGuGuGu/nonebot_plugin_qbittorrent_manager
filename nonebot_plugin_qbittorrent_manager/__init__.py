@@ -1,3 +1,4 @@
+import html
 from PIL import Image
 from nonebot import logger, require, on_command
 from nonebot.plugin import PluginMetadata
@@ -59,6 +60,7 @@ async def download_msg(event: Event):
 
     command_prefix = f"{msg.split('qb下载')[0]}qb下载"
     args = msg.removeprefix(command_prefix)
+    args = html.unescape(args)  # 反转义文字
 
     msg = await command_download(args=args)
 
@@ -79,6 +81,7 @@ async def download_msg(event: Event):
 
     command_prefix = f"{msg.split('qb下载')[0]}qb下载"
     args = msg.removeprefix(command_prefix)
+    args = html.unescape(args)  # 反转义文字
 
     msg = await command_download_list(args=args)
 
