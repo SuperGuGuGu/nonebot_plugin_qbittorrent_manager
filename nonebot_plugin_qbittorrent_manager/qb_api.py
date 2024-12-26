@@ -79,14 +79,14 @@ async def call_api(path: str, params: dict = None, post_data: dict = None):
     return await client(path, post_data=post_data)
 
 
-async def get_torrent_list(list_data: dict = None) -> dict | str:
+async def get_torrent_list(select_data: dict = None) -> dict | str:
     """
     获取torrent列表
-    :param list_data:分类列表
+    :param select_data:分类列表
     :return:
     """
-    if list_data is None:
-        list_data = {}
+    if select_data is None:
+        select_data = {}
     # 获取列表
     try:
         data = await call_api("/api/v2/torrents/info")
@@ -116,11 +116,11 @@ async def get_torrent_list(list_data: dict = None) -> dict | str:
     new_download_data = {}
     category_list = []
     for torrent in download_data:
-        if list_data.get("tag") is not None:
-            if list_data.get("tag") not in download_data[torrent]["tags"].split(", "):
+        if select_data.get("tag") is not None:
+            if select_data.get("tag") not in download_data[torrent]["tags"].split(", "):
                 continue
-        if list_data.get("category") is not None:
-            if list_data.get("category") not in download_data[torrent]["category"].split(", "):
+        if select_data.get("category") is not None:
+            if select_data.get("category") not in download_data[torrent]["category"].split(", "):
                 continue
         if download_data[torrent]["category"] not in category_list:
             category_list.append(download_data[torrent]["category"])

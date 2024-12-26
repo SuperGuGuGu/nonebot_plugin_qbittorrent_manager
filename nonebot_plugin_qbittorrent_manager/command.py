@@ -90,24 +90,28 @@ async def command_download(args: str):
 
 async def command_download_list(args: str):
     # 解析列表参数
-    list_data = {}
+    select_data = {}
     args_list = args.split(" ")
     jump_num = 0
     for i, arg in enumerate(args_list):
         if jump_num > 0:
             jump_num -= 1
         elif arg in ["-tag", "-t"]:
-            list_data["tag"] = args_list[i + 1]
+            if i + 1 > len(args_list) - 1:
+                return "参数类型后需要添加参数"
+            select_data["tag"] = args_list[i + 1]
             jump_num += 1
         elif arg in ["-savepath", "-path", "-p"]:
             return "查看列表不支持文件夹参数"
         elif arg in ["-category", "-c"]:
-            list_data["category"] = args_list[i + 1]
+            if i + 1 > len(args_list) - 1:
+                return "参数类型后需要添加参数"
+            select_data["category"] = args_list[i + 1]
             jump_num += 1
 
     # 获取列表
     try:
-        download_data: dict[str, dict] = await get_torrent_list(list_data=list_data)
+        download_data: dict[str, dict] = await get_torrent_list(select_data=select_data)
     except Exception as e:
         return "api连接失败"
 
