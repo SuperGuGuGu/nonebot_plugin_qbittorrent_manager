@@ -2,7 +2,7 @@ import json
 import re
 from nonebot import logger
 from .config import menu_data, state_name
-from .qb_api import call_api
+from .qb_api import call_api, get_torrent_list
 
 
 async def command_help():
@@ -15,7 +15,6 @@ async def command_help():
 async def command_download(args: str):
     if args in ["", " "]:
         return "请添加要下载的内容，例：" + '"qb下载 xxx"'
-    return_msg = []
 
     # 解析链接
     download_data = {"urls": []}
@@ -69,9 +68,7 @@ async def command_download(args: str):
             task_data["error"] += 1
 
     # 组装返回信息
-    return_msg = f"提交{task_data['num']}个任务，成功{task_data['succeed']}个"
-
-    return return_msg
+    return f"提交{task_data['num']}个任务，成功{task_data['succeed']}个"
 
 
 async def command_download_list(args: str):
@@ -92,33 +89,23 @@ async def command_download_list(args: str):
             jump_num += 1
 
     # 获取列表
-    try:
-        data = await call_api("/api/v2/torrents/info", post_data=list_data)
-        logger.success("获取列表成功")
-    except Exception as e:
-        logger.error(e)
-        return "api返回错误"
+    download_data: dict[str, dict] = await get_torrent_list()
+    new_download_data = {}
+    category_list = []
+    for torrent in download_data:
+        if list_data.get("tag") is not None:
+            if list_data.get("tag") not in download_data[torrent]["tags"].split(", "):
+                continue
+        if list_data.get("category") is not None:
+            if list_data.get("category") not in download_data[torrent]["category"].split(", "):
+                continue
 
-    # 排序列表
-    download_list = json.loads(data.text)
-    download_data = {}
-    category_list = []  # 分类列表
-    for data in download_list:
-        num = 5
-        torrent_id = data["hash"]
-        for i in range(len(data["hash"]) - num):
-            if data["hash"][:num + i] not in download_data.keys():
-                torrent_id = data["hash"][:num + i]
-                break
-        if data["completed"] != 0:
-            data["download_state"] = data["completed"] / (data["completed"] + data["amount_left"]) * 100
-        else:
-            data["download_state"] = 0
+        if download_data[torrent]["category"] not in category_list:
+            category_list.append(download_data[torrent]["category"])
+        new_download_data[torrent] = download_data[torrent]
+    download_data = dict(sorted(new_download_data.items(), key=lambda item: item[1]['download_state'], reverse=True))
 
-        download_data[torrent_id] = data
-        if data["category"] not in category_list:
-            category_list.append(data["category"])
-    download_data = dict(sorted(download_data.items(), key=lambda item: item[1]['download_state'], reverse=True))
+    # 组装返回信息
     message = ""
     for category in category_list:
         if category == "":
