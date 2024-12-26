@@ -1,4 +1,4 @@
-from nonebot import get_plugin_config
+from nonebot import get_plugin_config, logger
 from pydantic import BaseModel, field_validator
 
 
@@ -8,8 +8,7 @@ class Config(BaseModel):
     qbm_url: str
     qbm_username: str
     qbm_password: str
-    qbm_enable_group: list[str] = []
-    qbm_enable_private: list[str] = []
+    qbm_enable_user: list[str] = []
     qbm_send_text: bool = False
     qbm_basepath: str = "./qbittorrent_manager/"
 
@@ -74,7 +73,8 @@ plugin_config = get_plugin_config(Config)
 qb_url = plugin_config.qbm_url
 qbm_username = plugin_config.qbm_username
 qbm_password = plugin_config.qbm_password
-enable_group = plugin_config.qbm_enable_group
-enable_private = plugin_config.qbm_enable_private
+enable_user = plugin_config.qbm_enable_user
+if len(enable_user) == 0:
+    logger.warning("未配置enable_user，将响应所有用户的指令")
 send_text = plugin_config.qbm_send_text
 basepath = plugin_config.qbm_basepath

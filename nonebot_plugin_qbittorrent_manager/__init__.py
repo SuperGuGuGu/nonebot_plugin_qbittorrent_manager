@@ -6,7 +6,7 @@ from nonebot.rule import to_me
 from nonebot.adapters import Event
 
 from .tools import save_image
-from .config import Config, menu_data
+from .config import Config, menu_data, enable_user
 from .command import command_help, command_download, command_download_list, command_delete
 
 require("nonebot_plugin_saa")
@@ -41,6 +41,9 @@ async def help_msg(event: Event):
     # if msg == "":
     #     await help_cmd.finish()
 
+    if event.get_user_id() not in enable_user and enable_user != []:
+        await help_cmd.finish()
+
     msg = await command_help()
 
     await send(msg)
@@ -57,6 +60,9 @@ async def download_msg(event: Event):
     msg: str = str(event.get_message().copy())
     if msg == "":
         await download_cmd.finish()
+
+    if event.get_user_id() not in enable_user and enable_user != []:
+        await help_cmd.finish()
 
     command_prefix = f"{msg.split('qb下载')[0]}qb下载"
     args = msg.removeprefix(command_prefix).removeprefix(" ")
@@ -79,6 +85,9 @@ async def download_msg(event: Event):
     if msg == "":
         await download_list_cmd.finish()
 
+    if event.get_user_id() not in enable_user and enable_user != []:
+        await help_cmd.finish()
+
     command_prefix = f"{msg.split('qb列表')[0]}qb列表"
     args = msg.removeprefix(command_prefix).removeprefix(" ")
     args = html.unescape(args)  # 反转义文字
@@ -99,6 +108,9 @@ async def download_msg(event: Event):
     msg: str = str(event.get_message().copy())
     if msg == "":
         await delete_cmd.finish()
+
+    if event.get_user_id() not in enable_user and enable_user != []:
+        await help_cmd.finish()
 
     command_prefix = f"{msg.split('qb删除')[0]}qb删除"
     args = msg.removeprefix(command_prefix).removeprefix(" ")
