@@ -126,3 +126,85 @@ async def command_download_list(args: str):
     if message == "":
         return "暂无任务"
     return message
+
+
+async def command_delete(args: str):
+    if args in ["", " "]:
+        return '请添加要删除的torrent，例: "/qb删除 xxxx"'
+
+    # 解析列表参数
+    select_data = {}
+    args_list = args.split(" ")
+    jump_num = 0
+    for i, arg in enumerate(args_list):
+        if jump_num > 0:
+            jump_num -= 1
+        elif arg in ["-tag", "-t"]:
+            if i + 1 > len(args_list) - 1:
+                return "参数类型后需要添加参数"
+            select_data["tag"] = args_list[i + 1]
+            jump_num += 1
+        elif arg in ["-savepath", "-path", "-p"]:
+            if i + 1 > len(args_list) - 1:
+                return "参数类型后需要添加参数"
+            select_data["savepath"] = args_list[i + 1]
+            jump_num += 1
+        elif arg in ["-category", "-c"]:
+            if i + 1 > len(args_list) - 1:
+                return "参数类型后需要添加参数"
+            select_data["category"] = args_list[i + 1]
+            jump_num += 1
+        elif arg not in [""]:
+            select_data["url"] = arg
+
+    # 获取列表
+    try:
+        download_data: dict[str, dict] = await get_torrent_list(select_data=select_data)
+    except Exception as e:
+        return "api连接失败"
+
+    delete_list = {}
+    for torrent in download_data:
+        select = True
+        if select_data.get("url") is not None:
+            if select_data.get("url") != download_data[torrent]["hash"] and select_data.get("url") != torrent:
+                select = False
+        if select_data.get("category") is not None:
+            if select_data.get("category") != download_data[torrent]["category"]:
+                select = False
+        if select_data.get("savepath") is not None:
+            if (str(select_data.get("savepath")).replace("/", "\\") ==
+                    download_data[torrent]["download_path"].replace("/", "\\")):
+                select = False
+        if select_data.get("tag") is not None:
+            if select_data.get("tag") not in download_data[torrent]["tags"].split(", "):
+                select = False
+        if select is True:
+            # delete_list.append(download_data[torrent]["hash"])
+            delete_list[torrent] = download_data[torrent]
+
+    # 提交任务
+    task_data = {
+        "num": 0,
+        "succeed": 0,
+        "error": 0,
+    }
+
+    if len(delete_list) == 0:
+        return "找不到要删除的torrent"
+
+    for torrent in delete_list:
+        task_data["num"] += 1
+        post_data = {
+            "hashes": delete_list[torrent]['hash'],
+            "deleteFiles": False
+        }
+        try:
+            await call_api(f"/api/v2/torrents/delete", post_data=post_data)
+        except Exception as e:
+            logger.error("e")
+            logger.error(e)
+            task_data["error"] += 1
+
+    # 组装返回信息
+    return f"提交删除{task_data['num']}个任务，成功{task_data['succeed']}个"

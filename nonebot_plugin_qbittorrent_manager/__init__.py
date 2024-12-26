@@ -7,7 +7,7 @@ from nonebot.adapters import Event
 
 from .tools import save_image
 from .config import Config, menu_data
-from .command import command_help, command_download, command_download_list
+from .command import command_help, command_download, command_download_list, command_delete
 
 require("nonebot_plugin_saa")
 from nonebot_plugin_saa import Image as saaImage, MessageFactory
@@ -59,7 +59,7 @@ async def download_msg(event: Event):
         await download_cmd.finish()
 
     command_prefix = f"{msg.split('qb下载')[0]}qb下载"
-    args = msg.removeprefix(command_prefix)
+    args = msg.removeprefix(command_prefix).removeprefix(" ")
     args = html.unescape(args)  # 反转义文字
 
     msg = await command_download(args=args)
@@ -79,14 +79,35 @@ async def download_msg(event: Event):
     if msg == "":
         await download_list_cmd.finish()
 
-    command_prefix = f"{msg.split('qb下载')[0]}qb下载"
-    args = msg.removeprefix(command_prefix)
+    command_prefix = f"{msg.split('qb列表')[0]}qb列表"
+    args = msg.removeprefix(command_prefix).removeprefix(" ")
     args = html.unescape(args)  # 反转义文字
 
     msg = await command_download_list(args=args)
 
     await send(msg)
     await download_list_cmd.finish()
+
+
+delete_cmd = on_command("qb删除", rule=to_me(), priority=10, block=False)
+
+
+@delete_cmd.handle()
+async def download_msg(event: Event):
+    if not event.get_type().startswith("message"):
+        await delete_cmd.finish()
+    msg: str = str(event.get_message().copy())
+    if msg == "":
+        await delete_cmd.finish()
+
+    command_prefix = f"{msg.split('qb删除')[0]}qb删除"
+    args = msg.removeprefix(command_prefix).removeprefix(" ")
+    args = html.unescape(args)  # 反转义文字
+
+    msg = await command_delete(args=args)
+
+    await send(msg)
+    await delete_cmd.finish()
 
 
 async def send(msg):
