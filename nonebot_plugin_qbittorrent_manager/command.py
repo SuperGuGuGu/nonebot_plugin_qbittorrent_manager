@@ -24,12 +24,18 @@ async def command_download(args: str):
         if jump_num > 0:
             jump_num -= 1
         elif arg in ["-tag", "-t"]:
+            if i + 1 > len(args_list) - 1:
+                return "参数类型后需要添加参数"
             download_data["tag"] = args_list[i + 1]
             jump_num += 1
         elif arg in ["-savepath", "-path", "-p"]:
+            if i + 1 > len(args_list) - 1:
+                return "参数类型后需要添加参数"
             download_data["savepath"] = args_list[i + 1]
             jump_num += 1
         elif arg in ["-category", "-c"]:
+            if i + 1 > len(args_list) - 1:
+                return "参数类型后需要添加参数"
             download_data["category"] = args_list[i + 1]
             jump_num += 1
         else:
