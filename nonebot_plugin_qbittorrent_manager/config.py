@@ -25,20 +25,26 @@ menu_data = [
     {
         "trigger_method": "qb帮助",
         "func": "列出命令列表",
-        "trigger_condition": ' ',
+        "trigger_condition": " ",
         "brief_des": "qb帮助",
     },
     {
         "trigger_method": "qb下载",
         "func": "下载文件",
-        "trigger_condition": ' ',
+        "trigger_condition": " ",
         "brief_des": "qb下载 xxx",
     },
     {
         "trigger_method": "qb列表",
         "func": "列出qb任务列表",
-        "trigger_condition": ' ',
+        "trigger_condition": " ",
         "brief_des": "qb列表",
+    },
+    {
+        "trigger_method": "qb删除",
+        "func": "删除指定任务",
+        "trigger_condition": " ",
+        "brief_des": "qb删除 xxx",
     }
 ]
 

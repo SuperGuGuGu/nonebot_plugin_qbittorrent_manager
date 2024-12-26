@@ -8,6 +8,8 @@ from .qb_api import call_api, get_torrent_list
 async def command_help():
     return_msg = "指令列表："
     for command in menu_data:
+        if command['trigger_method'] == "qb帮助":
+            continue
         return_msg += f"\n{command['trigger_method']}: {command['func']}"
     return return_msg
 
@@ -210,6 +212,7 @@ async def command_delete(args: str):
             "deleteFiles": False
         }
         try:
+            task_data["succeed"] += 1
             await call_api(f"/api/v2/torrents/delete", post_data=post_data)
         except Exception as e:
             logger.error("e")
