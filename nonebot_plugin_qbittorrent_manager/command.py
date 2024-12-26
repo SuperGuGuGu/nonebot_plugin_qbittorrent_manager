@@ -89,28 +89,23 @@ async def command_download_list(args: str):
             jump_num += 1
 
     # 获取列表
-    download_data: dict[str, dict] = await get_torrent_list()
-    new_download_data = {}
+    try:
+        download_data: dict[str, dict] = await get_torrent_list()
+    except Exception as e:
+        return "api连接失败"
+
     category_list = []
     for torrent in download_data:
-        if list_data.get("tag") is not None:
-            if list_data.get("tag") not in download_data[torrent]["tags"].split(", "):
-                continue
-        if list_data.get("category") is not None:
-            if list_data.get("category") not in download_data[torrent]["category"].split(", "):
-                continue
-
         if download_data[torrent]["category"] not in category_list:
             category_list.append(download_data[torrent]["category"])
-        new_download_data[torrent] = download_data[torrent]
-    download_data = dict(sorted(new_download_data.items(), key=lambda item: item[1]['download_state'], reverse=True))
 
     # 组装返回信息
     message = ""
     for category in category_list:
         if category == "":
-            category = "未分类"
-        message += f"{category}: \n"
+            message += f"未分类: \n"
+        else:
+            message += f"{category}: \n"
         for torrent_id in download_data:
             if category == download_data[torrent_id]['category']:
                 message += f"  {torrent_id}: "

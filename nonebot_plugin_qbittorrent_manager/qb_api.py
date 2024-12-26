@@ -24,7 +24,6 @@ async def client(path, post_data=None, timeout=10):
                 cookies=qbm_cache.get("cookies")
             )
     if data.status_code == status_code.OK:
-        logger.debug(data.text)
         return data
     logger.error(f"url: {qb_url}{path}")
     logger.error(f"data: {data.text}")
@@ -80,18 +79,21 @@ async def call_api(path: str, params: dict = None, post_data: dict = None):
     return await client(path, post_data=post_data)
 
 
-async def get_torrent_list() -> dict | str:
+async def get_torrent_list(list_data: dict = None) -> dict | str:
     """
-
+    获取torrent列表
+    :param list_data:分类列表
     :return:
     """
+    if list_data is None:
+        list_data = {}
     # 获取列表
     try:
-        data = await call_api("/api/v2/torrents/info", post_data=list_data)
+        data = await call_api("/api/v2/torrents/info")
         logger.success("获取列表成功")
     except Exception as e:
-        logger.error(e)
-        return "api返回错误"
+        logger.error("call_api失败: /api/v2/torrents/info")
+        raise "call_api失败"
 
     # 整理列表
     download_list = json.loads(data.text)
@@ -109,5 +111,22 @@ async def get_torrent_list() -> dict | str:
         else:
             data["download_state"] = 0
         download_data[torrent_id] = data
+
+    # 排序
+    new_download_data = {}
+    category_list = []
+    for torrent in download_data:
+        if list_data.get("tag") is not None:
+            if list_data.get("tag") not in download_data[torrent]["tags"].split(", "):
+                continue
+        if list_data.get("category") is not None:
+            if list_data.get("category") not in download_data[torrent]["category"].split(", "):
+                continue
+        if download_data[torrent]["category"] not in category_list:
+            category_list.append(download_data[torrent]["category"])
+        new_download_data[torrent] = download_data[torrent]
+
+    download_data = dict(sorted(new_download_data.items(), key=lambda item: item[1]['download_state'], reverse=True))
+
     return download_data
 
