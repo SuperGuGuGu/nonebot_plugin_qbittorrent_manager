@@ -90,7 +90,7 @@ async def command_download_list(args: str):
 
     # 获取列表
     try:
-        download_data: dict[str, dict] = await get_torrent_list()
+        download_data: dict[str, dict] = await get_torrent_list(list_data=list_data)
     except Exception as e:
         return "api连接失败"
 
