@@ -41,7 +41,7 @@ async def command_download(args: str):
             download_data["category"] = args_list[i + 1]
             jump_num += 1
         else:
-            magnet_links: list[str] = re.findall(r'[a-zA-Z0-9]{40}[a-zA-Z0-9&=.\[\]\-]*', arg)
+            magnet_links: list[str] = re.findall(r'[a-zA-Z0-9]{30,60}[a-zA-Z0-9&=.\[\]\-]*', arg)
             # magnet_links = re.findall(r'[a-zA-Z0-9]{40}', arg)
             for link in magnet_links:
                 if "&" in link:
