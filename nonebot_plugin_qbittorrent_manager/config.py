@@ -1,9 +1,7 @@
 from nonebot import get_plugin_config, logger
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel
 
 
-# 我也不知道这个注释有什么用，pyc加的，删了它会骂我
-# noinspection PyNestedDecorators
 class Config(BaseModel):
     qbm_url: str
     qbm_username: str
@@ -11,13 +9,6 @@ class Config(BaseModel):
     qbm_enable_user: list[str] = []
     qbm_send_text: bool = False
     qbm_basepath: str = "./qbittorrent_manager/"
-
-    @field_validator("qbm_url")
-    @classmethod
-    def check_priority(cls, url: str) -> str:
-        if url.startswith("http://") or url.startswith("https://"):
-            return url
-        raise ValueError("qbm_url需要配置一个url，例: 'http://127.0.0.1:8080'")
 
 
 menu_data = [
@@ -71,6 +62,8 @@ state_name = {
 
 plugin_config = get_plugin_config(Config)
 qb_url = plugin_config.qbm_url
+if not qb_url.startswith("http://") or not qb_url.startswith("https://"):
+    raise "qbm_url需要配置一个url，例: 'http://127.0.0.1:8080'"
 qbm_username = plugin_config.qbm_username
 qbm_password = plugin_config.qbm_password
 enable_user = plugin_config.qbm_enable_user
