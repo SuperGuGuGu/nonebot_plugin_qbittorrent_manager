@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-qbittorrent-manager"
-version = "0.2.2"
+version = "0.2.3"
 description = "qbittorrent管理器"
 authors = ["SuperGuGuGu <from89917812@163.com>"]
 license = "MIT License"
