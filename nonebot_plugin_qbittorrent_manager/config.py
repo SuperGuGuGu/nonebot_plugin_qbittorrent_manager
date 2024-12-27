@@ -62,7 +62,7 @@ state_name = {
 
 plugin_config = get_plugin_config(Config)
 qb_url = plugin_config.qbm_url
-if not qb_url.startswith("http://") or not qb_url.startswith("https://"):
+if not qb_url.startswith("http://") and not qb_url.startswith("https://"):
     raise "qbm_url需要配置一个url，例: 'http://127.0.0.1:8080'"
 qbm_username = plugin_config.qbm_username
 qbm_password = plugin_config.qbm_password
