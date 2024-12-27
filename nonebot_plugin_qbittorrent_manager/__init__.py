@@ -1,7 +1,7 @@
 import html
 from PIL import Image
 from nonebot import logger, require, on_command
-from nonebot.plugin import PluginMetadata
+from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.rule import to_me
 from nonebot.adapters import Event
 
@@ -13,7 +13,6 @@ require("nonebot_plugin_saa")
 from nonebot_plugin_saa import Image as saaImage, MessageFactory
 from nonebot_plugin_saa import Text as saaText
 
-
 __plugin_meta__ = PluginMetadata(
     name="nonebot_plugin_qbittorrent_manager",
     description="qb管理器",
@@ -24,7 +23,9 @@ __plugin_meta__ = PluginMetadata(
     # 发布必填。
     config=Config,
     # 插件配置项类，如无需配置可不填写。
-    # supported_adapters={"~onebot.v11", "~telegram"},
+    supported_adapters=inherit_supported_adapters(
+        "nonebot_plugin_alconna",
+    ),
     # 支持的适配器集合，其中 `~` 在此处代表前缀 `nonebot.adapters.`，其余适配器亦按此格式填写。
     # 若插件可以保证兼容所有适配器（即仅使用基本适配器功能）可不填写，否则应该列出插件支持的适配器。
     extra={'menu_data': menu_data},
