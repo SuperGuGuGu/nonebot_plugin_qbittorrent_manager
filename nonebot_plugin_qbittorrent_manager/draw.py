@@ -27,16 +27,16 @@ async def draw_torrent_list(torrent_data: dict) -> Image.Image:
         if len(name) > 25:
             name = name[:23] + "..."
         draw_data.append([
-            {"color": "#000000", "size": 23, "text": name},
+            {"color": "#000000", "size": 22, "text": name},
             {},
             {},
-            {"color": "#000000", "size": 23, "text": state_name[str(torrent.get("state"))]},
-            {"color": "#000000", "size": 23,
+            {"color": "#000000", "size": 22, "text": state_name[str(torrent.get("state"))]},
+            {"color": "#000000", "size": 22,
              "text": f"{size_text(torrent.get('size'))}/{size_text(torrent.get('size') - torrent.get('completed'))}"},
             {},
-            {"color": "#000000", "size": 23, "text": "{:.2f}%".format(torrent.get('download_state'))},
-            {"color": "#000000", "size": 23, "text": torrent.get('tags')},
-            {"color": "#000000", "size": 23, "text": torrent.get('category')},
+            {"color": "#000000", "size": 22, "text": "{:.2f}%".format(torrent.get('download_state'))},
+            {"color": "#000000", "size": 22, "text": torrent.get('tags')},
+            {"color": "#000000", "size": 22, "text": torrent.get('category')},
         ])
 
     x = 1200
@@ -68,6 +68,7 @@ def size_text(num):
     for unit in units:
         if num < 1024:
             text = "{:.2f}".format(num)
+            text = text.removesuffix("0").removesuffix(".0")
             return f"{text}{unit}"
         num /= 1024
     return f"{num}{units[-1]}"
