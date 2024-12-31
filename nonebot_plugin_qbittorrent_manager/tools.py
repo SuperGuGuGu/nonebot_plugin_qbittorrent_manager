@@ -12,7 +12,7 @@ import time
 import matplotlib.font_manager as fm
 from nonebot import logger
 from pathlib import Path
-from .config import qb_url, plugin_cache_dir
+from .config import plugin_cache_dir
 
 qbm_cache = {
     "font_path": {}
