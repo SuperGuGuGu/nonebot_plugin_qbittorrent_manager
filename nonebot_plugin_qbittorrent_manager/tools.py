@@ -47,7 +47,7 @@ def save_image(
         image_stream.seek(0)
         return image_stream.read()
 
-    d_y, d_m, d_d = map(int, time.strftime("%Y/%m/%d", time.localtime()).split("/"))
+    d_y, d_m, d_d = time.strftime("%Y/%m/%d", time.localtime()).split("/")
     time_now = int(time.time())
 
     if image_path is None:
@@ -199,7 +199,7 @@ async def draw_text(
             yield value
 
     default_font = ["msyh.ttc", "DejaVuSans.ttf", "msjh.ttc", "msjhl.ttc", "msjhb.ttc", "YuGothR.ttc"]
-    if fontfile == "":
+    if fontfile is None or fontfile == "":
         fontfile = "msyh.ttc"
     if not fontfile.startswith("/") or ":/" in fontfile:
         # 获取字体绝对路径
@@ -477,7 +477,7 @@ async def draw_form(
         form_data: list[list[dict]],
         size_x: int,
         uniform_size: bool = True,
-        calculate: bool = True,
+        calculate: bool = False,
         out_of_form: bool = True,
         font_file_path: str = None
 ) -> Image.Image:

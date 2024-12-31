@@ -82,7 +82,7 @@ async def call_api(path: str, params: dict = None, post_data: dict = None):
 async def get_torrent_list(select_data: dict = None) -> dict | str:
     """
     获取torrent列表
-    :param select_data:分类列表
+    :param select_data:筛选数据
     :return:
     """
     if select_data is None:

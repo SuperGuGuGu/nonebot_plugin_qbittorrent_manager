@@ -64,6 +64,7 @@ state_name = {
     "checkingResumeData": "检查恢复数据",  # 在 qBt 启动时检查恢复数据
     "moving": "正在移动",  # Torrent 正在移动到另一个位置
     "unknown": "未知状态",  # 未知状态
+    "None": "未知",  # 未知状态
 }
 
 plugin_config = get_plugin_config(Config)

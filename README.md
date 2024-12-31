@@ -74,13 +74,13 @@ qbittorrent管理器，可以远程管理qb下载内容
 
 在 nonebot2 项目的`.env`文件中添加下表中的必填配置
 
-|       配置项       | 必填 |           默认值            |          说明          |            示例            |
-|:---------------:|:--:|:------------------------:|:--------------------:|:------------------------:|
-|     qbm_url     | 是  |            无             |        qb的url        | "http://127.0.0.1:8080"  |
-|  qbm_username   | 是  |            无             |         用户名称         |        "username"        |
-|  qbm_password   | 是  |            无             |         用户密码         |        "password"        |
-| qbm_enable_user | 否  |            []            | 有使用权限的用户，默认响应所有用户的操作 |        ["12345"]         |
-|  qbm_send_text  | 否  |          false           |      禁用绘图，只发送文本      |           true           |
+|       配置项       | 必填 |  默认值  |          说明          |           示例            |
+|:---------------:|:--:|:-----:|:--------------------:|:-----------------------:|
+|     qbm_url     | 是  |   无   |        qb的url        | "http://127.0.0.1:8080" |
+|  qbm_username   | 是  |   无   |         用户名称         |       "username"        |
+|  qbm_password   | 是  |   无   |         用户密码         |       "password"        |
+| qbm_enable_user | 否  |  []   | 有使用权限的用户，默认响应所有用户的操作 |        ["12345"]        |
+|  qbm_send_text  | 否  | false |      禁用绘图，只发送文本      |          true           |
 
 本插件使用了nonebot-plugin-localstore存储文件。
 
@@ -98,7 +98,7 @@ qbittorrent管理器，可以远程管理qb下载内容
 |:----:|:-----------:|:----:|:----:|:----:|
 | qb帮助 |    指令列表     |  是   |  ✅   | 🗓️  |
 | qb下载 |    下载文件     |  是   |  ✅️  | 🗓️  |
-| qb列表 |   目前的任务列表   |  是   |  ✅️  | 🗓️  |
+| qb列表 |   目前的任务列表   |  是   |  ✅️  |  🚧  |
 | qb删除 |   删除指定任务    |  是   |  ✅️  | 🗓️  |
 | qb修改 | 修改分类、标签、文件夹 |  是   | 🗓️  | 🗓️  |
 
@@ -120,3 +120,8 @@ qb下载、qb列表、qb删除 可带参数执行
 ### 效果图
 
 [图片.jpg]
+
+## ⭐
+
+<p><img src="https://api.star-history.com/svg?repos=SuperGuGuGu/nonebot_plugin_qbittorrent_manager&type=Date" width="480" alt="NoneBotPluginText"></p>
+

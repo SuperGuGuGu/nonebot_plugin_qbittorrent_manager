@@ -1,7 +1,8 @@
 import json
 import re
 from nonebot import logger
-from .config import menu_data, state_name
+from .config import menu_data, state_name, send_text
+from .draw import draw_torrent_list
 from .qb_api import call_api, get_torrent_list
 
 
@@ -123,21 +124,24 @@ async def command_download_list(args: str):
             category_list.append(download_data[torrent]["category"])
 
     # 组装返回信息
-    message = ""
-    for category in category_list:
-        if category == "":
-            message += f"未分类: \n"
-        else:
-            message += f"{category}: \n"
-        for torrent_id in download_data:
-            if category == download_data[torrent_id]['category']:
-                message += f"  {torrent_id}: "
-                message += f"{int(download_data[torrent_id]['download_state'])}% "
-                message += f"{state_name[download_data[torrent_id]['state']]}\n"
+    if send_text is True:
+        message = ""
+        for category in category_list:
+            if category == "":
+                message += f"未分类: \n"
+            else:
+                message += f"{category}: \n"
+            for torrent_id in download_data:
+                if category == download_data[torrent_id]['category']:
+                    message += f"  {torrent_id}: "
+                    message += f"{int(download_data[torrent_id]['download_state'])}% "
+                    message += f"{state_name[download_data[torrent_id]['state']]}\n"
 
-    if message == "":
-        return "暂无任务"
-    return message
+        if message == "":
+            return "暂无任务"
+        return message
+
+    return await draw_torrent_list(download_data)
 
 
 async def command_delete(args: str):
