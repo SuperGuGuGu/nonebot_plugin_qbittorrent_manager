@@ -130,7 +130,7 @@ async def send(msg):
     saa_msg = []
     for m in msg:
         if type(m) is Image.Image:
-            saa_msg.append(saaImage(await save_image(msg)))
+            saa_msg.append(saaImage(save_image(m, to_bytes=True)))
         elif type(m) is bytes:
             saa_msg.append(saaImage(m))
         else:
