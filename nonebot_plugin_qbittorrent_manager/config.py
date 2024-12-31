@@ -1,5 +1,12 @@
+import os
 from nonebot import get_plugin_config, logger
 from pydantic import BaseModel
+from pathlib import Path
+from nonebot import require
+
+require("nonebot_plugin_localstore")
+
+import nonebot_plugin_localstore as store
 
 
 class Config(BaseModel):
@@ -8,7 +15,6 @@ class Config(BaseModel):
     qbm_password: str
     qbm_enable_user: list[str] = []
     qbm_send_text: bool = False
-    qbm_basepath: str = "./qbittorrent_manager/"
 
 
 menu_data = [
@@ -70,4 +76,7 @@ enable_user = plugin_config.qbm_enable_user
 if len(enable_user) == 0:
     logger.warning("未配置enable_user，将响应所有用户的指令")
 send_text = plugin_config.qbm_send_text
-basepath = plugin_config.qbm_basepath
+
+plugin_cache_dir: Path = store.get_plugin_cache_dir()
+# plugin_config_dir: Path = store.get_plugin_config_dir()
+# plugin_data_dir: Path = store.get_plugin_data_dir()

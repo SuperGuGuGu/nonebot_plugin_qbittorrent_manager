@@ -81,7 +81,10 @@ qbittorrent管理器，可以远程管理qb下载内容
 |  qbm_password   | 是  |            无             |         用户密码         |        "password"        |
 | qbm_enable_user | 否  |            []            | 有使用权限的用户，默认响应所有用户的操作 |        ["12345"]         |
 |  qbm_send_text  | 否  |          false           |      禁用绘图，只发送文本      |           true           |
-|  qbm_basepath   | 否  | "./qbittorrent_manager/" |      插件数据存放文件夹       | "./qbittorrent_manager/" |
+
+本插件使用了nonebot-plugin-localstore存储文件。
+
+如有需要修改存储位置，请参考 [localstore文档](https://github.com/nonebot/plugin-localstore)
 
 ## 🎉 使用
 

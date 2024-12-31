@@ -11,8 +11,8 @@ import os
 import time
 import matplotlib.font_manager as fm
 from nonebot import logger
-from .config import qb_url, basepath
-
+from pathlib import Path
+from .config import qb_url, plugin_cache_dir
 
 qbm_cache = {
     "font_path": {}
@@ -27,7 +27,6 @@ def save_image(
         image,
         image_path: str = None,
         image_name: int | str = None,
-        relative_path=False,
         to_bytes: bool = False,
         mode: str = "jpg"):
     """
@@ -35,7 +34,6 @@ def save_image(
     :param image:要保存的图片
     :param image_path: 指定的图片所在文件夹路径，默认为缓存
     :param image_name:图片名称，不填为随机数字
-    :param relative_path: 是否返回相对路径
     :param to_bytes: 是否转为bytes
     :param mode: 保存的图片格式
     :return:保存的路径
@@ -53,33 +51,29 @@ def save_image(
     time_now = int(time.time())
 
     if image_path is None:
-        image_path = "{basepath}" + f"cache/{d_y}/{d_m}/{d_d}/"
-    real_path = image_path.replace("{basepath}", basepath)
-    os.makedirs(real_path, exist_ok=True)
+        image_path = plugin_cache_dir / "cache" / d_y / d_m / d_d
+    os.makedirs(image_path, exist_ok=True)
 
     if image_name is None:
         image_name = f"{time_now}_{random.randint(1000, 9999)}"
         num = 50
-        while True:
+        while True and num > 0:
             num -= 1
             random_num = str(random.randint(1000, 9999))
-            if os.path.exists(f"{real_path}{image_name}_{random_num}.{mode}"):
+            if os.path.exists(image_path / f"{image_name}_{random_num}.{mode}"):
                 continue
             image_name = f"{image_name}_{random_num}.{mode}"
             break
 
-    logger.debug(f"保存图片文件：{real_path}{image_name}")
-    image.save(f"{real_path}{image_name}")
+    logger.debug(f"保存图片文件：{image_path}/{image_name}")
+    image.save(image_path / image_name)
 
     if to_bytes is True:
-        image_file = open(f"{real_path}{image_name}", "rb")
+        image_file = open(image_path / image_name, "rb")
         image = image_file.read()
         image_file.close()
         return image
-    if relative_path is True:
-        return f"{image_path}{image_name}"
-    else:
-        return f"{real_path}{image_name}"
+    return image_path / image_name
 
 
 def circle_corner(img, radii: int):
@@ -358,20 +352,20 @@ async def load_image(path: str, size=None, mode=None, cache_image=True):
             if cache_image is False:
                 image = await connect_api("image", path)
             else:
-                cache_path = path.removeprefix("http://").removeprefix("https://").split("?")[0]
+                cache_path = Path(path.removeprefix("http://").removeprefix("https://").split("?")[0])
 
-                if os.path.exists(f"{basepath}cache/web_cache/{cache_path}"):
-                    return Image.open(f"{basepath}cache/web_cache/{cache_path}")
-                file_name = cache_path.split("/")[-1]
-                file_path = f"{basepath}cache/web_cache/{cache_path.removesuffix(file_name)}"
+                if os.path.exists(plugin_cache_dir / "web_cache" / cache_path):
+                    return Image.open(plugin_cache_dir / "web_cache" / cache_path)
+                file_name = cache_path.name
+                file_path = plugin_cache_dir / "web_cache" / cache_path.parent
                 os.makedirs(file_path, exist_ok=True)
                 image = await connect_api("image", path)
-                image.save(f"{file_path}{file_name}")
+                image.save(file_path / file_name)
 
             return image
         else:
-            if path.startswith("{basepath}"):
-                image_path = path.replace("{basepath}", basepath)
+            if path.startswith("{cache_dir}"):
+                image_path = plugin_cache_dir / Path(path.removeprefix("{cache_dir}"))
                 if not os.path.exists(image_path):
                     raise "图片不存在"
                 image = Image.open(image_path, mode)
