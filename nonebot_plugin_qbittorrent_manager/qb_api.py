@@ -112,9 +112,8 @@ async def get_torrent_list(select_data: dict = None) -> dict | str:
             data["download_state"] = 0
         download_data[torrent_id] = data
 
-    # 排序
+    # 筛选
     new_download_data = {}
-    category_list = []
     for torrent in download_data:
         if select_data.get("tag") is not None:
             if select_data.get("tag") not in download_data[torrent]["tags"].split(", "):
@@ -122,10 +121,9 @@ async def get_torrent_list(select_data: dict = None) -> dict | str:
         if select_data.get("category") is not None:
             if select_data.get("category") not in download_data[torrent]["category"].split(", "):
                 continue
-        if download_data[torrent]["category"] not in category_list:
-            category_list.append(download_data[torrent]["category"])
         new_download_data[torrent] = download_data[torrent]
 
+    # 排序
     download_data = dict(sorted(new_download_data.items(), key=lambda item: item[1]['download_state'], reverse=True))
 
     return download_data
