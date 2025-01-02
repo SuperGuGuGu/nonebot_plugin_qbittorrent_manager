@@ -7,7 +7,7 @@ from nonebot.adapters import Event
 
 from .tools import save_image
 from .config import Config, menu_data, enable_user
-from .command import command_help, command_download, command_download_list, command_delete
+from .command import command_help, command_download, command_download_list, command_delete, command_edit
 
 require("nonebot_plugin_saa")
 from nonebot_plugin_saa import Image as saaImage, MessageFactory
@@ -121,6 +121,30 @@ async def download_msg(event: Event):
 
     await send(msg)
     await delete_cmd.finish()
+
+
+edit_cmd = on_command("qb修改", rule=to_me(), priority=10, block=False)
+
+
+@edit_cmd.handle()
+async def edit_msg(event: Event):
+    if not event.get_type().startswith("message"):
+        await edit_cmd.finish()
+    msg: str = str(event.get_message().copy())
+    if msg == "":
+        await edit_cmd.finish()
+
+    if event.get_user_id() not in enable_user and enable_user != []:
+        await edit_cmd.finish()
+
+    command_prefix = f"{msg.split('qb修改')[0]}qb修改"
+    args = msg.removeprefix(command_prefix).removeprefix(" ")
+    args = html.unescape(args)  # 反转义文字
+
+    msg = await command_edit(args=args)
+
+    await send(msg)
+    await edit_cmd.finish()
 
 
 async def send(msg):

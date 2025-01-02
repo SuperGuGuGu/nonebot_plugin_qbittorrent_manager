@@ -7,7 +7,7 @@ from .config import qbm_username, qbm_password, qb_url
 from .tools import qbm_cache
 
 
-async def client(path, post_data=None, timeout=10):
+async def client(path, post_data=None, timeout=10, not_raise=False):
     if post_data is None:
         async with httpx.AsyncClient() as http_client:
             data = await http_client.get(
@@ -23,7 +23,7 @@ async def client(path, post_data=None, timeout=10):
                 timeout=timeout,
                 cookies=qbm_cache.get("cookies")
             )
-    if data.status_code == status_code.OK:
+    if data.status_code == status_code.OK and not_raise is True:
         return data
     logger.error(f"url: {qb_url}{path}")
     logger.error(f"data: {data.text}")
@@ -53,12 +53,13 @@ async def login():
     return "succeed"
 
 
-async def call_api(path: str, params: dict = None, post_data: dict = None):
+async def call_api(path: str, params: dict = None, post_data: dict = None, not_raise=False):
     """
     请求qb的api
     :param path:
     :param params:
     :param post_data:
+    :param not_raise:
     :return:
     """
     logger.debug(f"call_api: {path}")
@@ -76,7 +77,7 @@ async def call_api(path: str, params: dict = None, post_data: dict = None):
             path += f"{p}={params[p]}&"
         path = path.removesuffix("&")
 
-    return await client(path, post_data=post_data)
+    return await client(path, post_data=post_data, not_raise=not_raise)
 
 
 async def get_torrent_list(select_data: dict = None) -> dict | str:

@@ -225,3 +225,106 @@ async def command_delete(args: str):
 
     # 组装返回信息
     return f"提交删除{task_data['num']}个任务，成功{task_data['succeed']}个"
+
+
+async def command_edit(args: str):
+    if args in ["", " "]:
+        return "请添加要下载的内容，例：" + '"qb下载 xxx"'
+
+    # 解析链接
+    edit_data = {"urls": {}}
+    args_list = args.split(" ")
+    jump_num = 0
+    for i, arg in enumerate(args_list):
+        if jump_num > 0:
+            jump_num -= 1
+        elif arg in ["-tag", "-t"]:
+            if i + 1 > len(args_list) - 1:
+                return "参数类型后需要添加参数"
+            edit_data["tag"] = args_list[i + 1]
+            jump_num += 1
+        elif arg in ["-savepath", "-path", "-p"]:
+            if i + 1 > len(args_list) - 1:
+                return "参数类型后需要添加参数"
+            edit_data["savepath"] = args_list[i + 1]
+            jump_num += 1
+        elif arg in ["-category", "-c"]:
+            if i + 1 > len(args_list) - 1:
+                return "参数类型后需要添加参数"
+            edit_data["category"] = args_list[i + 1]
+            jump_num += 1
+        else:
+            magnet_links: list[str] = re.findall(r'[a-zA-Z0-9]{30,60}[a-zA-Z0-9&=.\[\]\-]*', arg)
+            # magnet_links = re.findall(r'[a-zA-Z0-9]{40}', arg)
+            for link in magnet_links:
+                if "&" in link:
+                    l = link.split("&")[0]
+                    args = link.removeprefix(f"{l}&")
+                    link = l
+                else:
+                    args = ""
+
+                if link not in edit_data["urls"].keys():
+                    edit_data["urls"][link] = args
+                    logger.debug(f"解析到链接：{link}")
+
+    # 提交任务
+    torrent_data = get_torrent_list()
+    error_msg = {}
+    edit_data = {'urls': {'aaf1a145e0c9e633801f4931a9bdb75157c87256': 'dn=sdfads'}, 'category': 'ccc'}
+    for url in edit_data["urls"]:
+        post_data = {}
+        if edit_data.get("tag") is not None:
+            # 删除tag
+            error = "暂不支持修改tag"
+
+            if error is not None:
+                if url not in error_msg.keys():
+                    error_msg[url] = [error]
+                else:
+                    error_msg[url].append(error)
+
+        if edit_data.get("savepath") is not None:
+            post_data = {"hashes": url, "location": edit_data.get("savepath")}
+            data = await call_api("/api/v2/torrents/setLocation", post_data=post_data, not_raise=True)
+            if data.status_code == 200:
+                error = None
+            elif data.status_code == 400:
+                error = "保存路径为空"
+            elif data.status_code == 403:
+                error = "用户没有对目录的写入权限"
+            elif data.status_code == 409:
+                error = "无法创建保存路径目录"
+            else:
+                logger.warning("意外情况")
+                logger.warning(data)
+                logger.warning(data.text)
+                error = "意外情况"
+            if error is not None:
+                if url not in error_msg.keys():
+                    error_msg[url] = [error]
+                else:
+                    error_msg[url].append(error)
+
+        if edit_data.get("category") is not None:
+            post_data = {"hashes": url, "category": edit_data.get("category")}
+            data = await call_api("/api/v2/torrents/setCategory", post_data=post_data)
+            if data.text == "Ok.":
+                continue
+            logger.error(data.text)
+            if url not in error_msg.keys():
+                error_msg[url] = ["设置分类失败"]
+            else:
+                error_msg[url].append("设置分类失败")
+
+    # 组装返回信息
+    if error_msg == {}:
+        return "修改成功"
+
+    message = "以下内容出错："
+    for torrent in error_msg:
+        message += f"\n{torrent[:6]}:"
+        for error in error_msg[torrent]:
+            message += f"\n{error}:"
+
+    return f"返回消息"

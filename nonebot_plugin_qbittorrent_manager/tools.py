@@ -657,3 +657,42 @@ def get_html_text_url(datas):
         else:
             return_data += get_html_text_url(data.children)
     return return_data
+
+
+def get_parameters(text: str | list) -> dict:
+    """
+    解析文字包含的参数，以空格切割
+    :param text:
+    :return:
+    """
+    if type(text) is str:
+        texts = text.split(" ")
+    else:
+        texts = text
+
+    parameters_list = {
+        "tag": ["-tag", "-t"],
+        "savepath": ["-savepath", "-path", "-p"],
+        "category": ["-category", "-c"],
+    }
+    return_data = {
+        "tag": None,
+        "savepath": None,
+        "category": None,
+        "texts": "",
+    }
+
+    # 解析
+    jump_num = 0
+    for text in texts:
+        if jump_num > 0:
+            jump_num -= 1
+            continue
+        for i, parameters in enumerate(parameters_list):
+            if text in parameters_list[parameters]:
+                return_data[parameters] = parameters_list[i + 1]
+                jump_num += 1
+            else:
+                return_data["texts"] += " " + text
+    return_data["texts"].removeprefix(" ")
+    return return_data
