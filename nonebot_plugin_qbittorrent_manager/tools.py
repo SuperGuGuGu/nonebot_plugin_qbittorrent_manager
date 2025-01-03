@@ -431,6 +431,15 @@ async def connect_api(
         file_path: str = None,
         timeout: int = 10
 ):
+    """
+    请求网络资源
+    :param connect_type: json, image, file
+    :param url: url
+    :param post_json: 要post的内容
+    :param file_path: 文件的保存路径
+    :param timeout: 超时时间
+    :return:
+    """
     logger.debug(f"connect_api请求URL：{url}")
     h = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                        "Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2088.76"}
@@ -645,18 +654,6 @@ async def mix_image(image_1, image_2, mix_type=1):
             images.alpha_composite(image_2, (0, y1_m))
             return images
     raise "未知的合并图像方式"
-
-
-def get_html_text_url(datas):
-    return_data = ""
-    for data in datas:
-        if data.name is None:
-            return_data += str(data)
-        elif data.name == "img":
-            return_data += str(data)
-        else:
-            return_data += get_html_text_url(data.children)
-    return return_data
 
 
 def get_parameters(text: str | list) -> dict:

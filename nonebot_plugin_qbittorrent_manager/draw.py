@@ -61,9 +61,14 @@ async def draw_torrent_list(torrent_data: dict) -> Image.Image:
     return image
 
 
-def size_text(num):
+def size_text(num: int) -> str:
+    """
+    转换数据单位
+    :param num:byte大小
+    :return:数字+单位。例：123Mb
+    """
     if num is None:
-        return None
+        return ""
     units = ["B", "Kb", "Mb", "Gb", "Tb", "Pb", "Eb"]
     for unit in units:
         if num < 1024:
