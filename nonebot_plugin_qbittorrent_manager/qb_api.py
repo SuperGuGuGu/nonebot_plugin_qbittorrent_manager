@@ -23,7 +23,7 @@ async def client(path, post_data=None, timeout=10, not_raise=False):
                 timeout=timeout,
                 cookies=qbm_cache.get("cookies")
             )
-    if data.status_code == status_code.OK and not_raise is True:
+    if data.status_code == status_code.OK or not_raise is True:
         return data
     logger.error(f"url: {qb_url}{path}")
     logger.error(f"data: {data.text}")
