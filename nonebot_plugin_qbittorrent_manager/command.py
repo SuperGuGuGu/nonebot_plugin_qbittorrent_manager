@@ -1,4 +1,3 @@
-import json
 import re
 from nonebot import logger
 from .config import menu_data, state_name, send_text
@@ -74,6 +73,7 @@ async def command_download(args: str):
         if download_data["urls"][url] != "":
             # 解析链接参数
             # logger.debug(f"解析链接参数: {download_data['urls'][url]}")
+            # download_data['urls'][url] = "dn=xxx.mp4"
             pass
         try:
             data = await call_api("/api/v2/torrents/add", post_data=post_data)
