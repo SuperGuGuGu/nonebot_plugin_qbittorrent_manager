@@ -231,6 +231,12 @@ async def command_edit(args: str):
     if args in ["", " "]:
         return "请添加要下载的内容，例：" + '"qb下载 xxx"'
 
+    try:
+        torrent_data: dict = await get_torrent_list()
+    except Exception as e:
+        logger.error(e)
+        return "api连接失败"
+
     # 解析链接
     edit_data = {"urls": {}}
     args_list = args.split(" ")
@@ -254,28 +260,24 @@ async def command_edit(args: str):
             edit_data["category"] = args_list[i + 1]
             jump_num += 1
         else:
-            magnet_links: list[str] = re.findall(r'[a-zA-Z0-9]{30,60}[a-zA-Z0-9&=.\[\]\-]*', arg)
-            # magnet_links = re.findall(r'[a-zA-Z0-9]{40}', arg)
-            for link in magnet_links:
-                if "&" in link:
-                    l = link.split("&")[0]
-                    args = link.removeprefix(f"{l}&")
-                    link = l
-                else:
-                    args = ""
-
-                if link not in edit_data["urls"].keys():
-                    edit_data["urls"][link] = args
-                    logger.debug(f"解析到链接：{link}")
+            if arg in torrent_data.keys():
+                edit_data["urls"][torrent_data[arg]["hash"]] = ""
+            else:
+                edit_data["urls"][arg] = ""
 
     # 提交任务
-    torrent_data = get_torrent_list()
     error_msg = {}
     for url in edit_data["urls"]:
-        post_data = {}
         if edit_data.get("tag") is not None:
-            # 删除tag
-            error = "暂不支持修改tag"
+            try:
+                await call_api(
+                    "/api/v2/torrents/addTags",
+                    post_data={
+                        "hashes": url,
+                        "tags": edit_data.get("tag")})
+                error = None
+            except Exception as e:
+                error = "api连接出错"
 
             if error is not None:
                 if url not in error_msg.keys():
@@ -326,4 +328,4 @@ async def command_edit(args: str):
         for error in error_msg[torrent]:
             message += f"\n{error}:"
 
-    return f"返回消息"
+    return message

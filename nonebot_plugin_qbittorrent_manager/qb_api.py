@@ -80,7 +80,7 @@ async def call_api(path: str, params: dict = None, post_data: dict = None, not_r
     return await client(path, post_data=post_data, not_raise=not_raise)
 
 
-async def get_torrent_list(select_data: dict = None) -> dict | str:
+async def get_torrent_list(select_data: dict = None) -> dict:
     """
     获取torrent列表
     :param select_data:筛选数据
@@ -128,4 +128,20 @@ async def get_torrent_list(select_data: dict = None) -> dict | str:
     download_data = dict(sorted(new_download_data.items(), key=lambda item: item[1]['download_state'], reverse=True))
 
     return download_data
+
+
+async def get_tags_list() -> dict:
+    """
+    获取tags列表
+    :return:
+    """
+    # 获取列表
+    try:
+        data = await call_api("/api/v2/torrents/tags")
+        logger.success("获取tags列表成功")
+    except Exception as e:
+        logger.error("call_api失败: /api/v2/torrents/tags")
+        raise "call_api失败"
+
+    return json.loads(data.text)
 
