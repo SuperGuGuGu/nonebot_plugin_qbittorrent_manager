@@ -1,8 +1,6 @@
 from PIL import Image
-from nonebot import logger
-
 from .config import state_name
-from .tools import circle_corner, draw_form, save_image
+from .tools import circle_corner, draw_form
 
 
 async def draw_torrent_list(torrent_data: dict) -> Image.Image:
@@ -12,6 +10,7 @@ async def draw_torrent_list(torrent_data: dict) -> Image.Image:
     :return:
     """
     draw_data = [[
+        {"color": "#000000", "size": 26, "text": "id"},
         {"color": "#000000", "size": 26, "text": "标题"},
         {},
         {},
@@ -22,11 +21,13 @@ async def draw_torrent_list(torrent_data: dict) -> Image.Image:
         {"color": "#000000", "size": 26, "text": "标签"},
         {"color": "#000000", "size": 26, "text": "分类"},
     ]]
-    for torrent in torrent_data.values():
+    for torrent_id in torrent_data:
+        torrent = torrent_data[torrent_id]
         name = str(torrent.get("name"))
         if len(name) > 25:
             name = name[:23] + "..."
         draw_data.append([
+            {"color": "#000000", "size": 22, "text": torrent_id},
             {"color": "#000000", "size": 22, "text": name},
             {},
             {},
@@ -52,7 +53,7 @@ async def draw_torrent_list(torrent_data: dict) -> Image.Image:
     paste_image = Image.new("RGBA", (x - 44, form_image.size[1]), "#000000")
     paste_image = circle_corner(paste_image, 20)
     image.alpha_composite(paste_image, (22, 25))
-    paste_image = Image.new("RGBA", (x - 46, form_image.size[1] + 2), "#FFFFFF")
+    paste_image = Image.new("RGBA", (x - 46, form_image.size[1] - 2), "#FFFFFF")
     paste_image = circle_corner(paste_image, 19)
     image.alpha_composite(paste_image, (23, 26))
 
