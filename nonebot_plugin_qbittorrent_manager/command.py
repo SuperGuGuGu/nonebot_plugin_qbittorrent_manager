@@ -271,7 +271,6 @@ async def command_edit(args: str):
     # 提交任务
     torrent_data = get_torrent_list()
     error_msg = {}
-    edit_data = {'urls': {'aaf1a145e0c9e633801f4931a9bdb75157c87256': 'dn=sdfads'}, 'category': 'ccc'}
     for url in edit_data["urls"]:
         post_data = {}
         if edit_data.get("tag") is not None:
