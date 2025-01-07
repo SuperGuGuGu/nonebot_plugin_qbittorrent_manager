@@ -7,7 +7,8 @@ from nonebot.adapters import Event
 
 from .tools import save_image
 from .config import Config, menu_data, enable_user
-from .command import command_help, command_download, command_download_list, command_delete, command_edit
+from .command import command_help, command_download, command_download_list, command_delete, command_edit, \
+    command_deep_delete
 
 require("nonebot_plugin_saa")
 from nonebot_plugin_saa import Image as saaImage, MessageFactory
@@ -118,6 +119,30 @@ async def download_msg(event: Event):
     args = html.unescape(args)  # 反转义文字
 
     msg = await command_delete(args=args)
+
+    await send(msg)
+    await delete_cmd.finish()
+
+
+delete_cmd = on_command("qb完全删除", rule=to_me(), priority=10, block=False)
+
+
+@delete_cmd.handle()
+async def download_msg(event: Event):
+    if not event.get_type().startswith("message"):
+        await delete_cmd.finish()
+    msg: str = str(event.get_message().copy())
+    if msg == "":
+        await delete_cmd.finish()
+
+    if event.get_user_id() not in enable_user and enable_user != []:
+        await help_cmd.finish()
+
+    command_prefix = f"{msg.split('qb完全删除')[0]}qb完全删除"
+    args = msg.removeprefix(command_prefix).removeprefix(" ")
+    args = html.unescape(args)  # 反转义文字
+
+    msg = await command_deep_delete(args=args)
 
     await send(msg)
     await delete_cmd.finish()
