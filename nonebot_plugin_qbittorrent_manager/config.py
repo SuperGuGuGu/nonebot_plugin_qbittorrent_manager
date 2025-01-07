@@ -70,6 +70,8 @@ plugin_config = get_plugin_config(Config)
 qb_url = plugin_config.qbm_url
 if not qb_url.startswith("http://") and not qb_url.startswith("https://"):
     logger.error("qbm_url配置出错，可能会导致无法正确连接，示例: 'http://127.0.0.1:8080'")
+if qb_url.endswith("/"):
+    qb_url = qb_url.removesuffix("/")
 qbm_username = plugin_config.qbm_username
 qbm_password = plugin_config.qbm_password
 enable_user = plugin_config.qbm_enable_user
