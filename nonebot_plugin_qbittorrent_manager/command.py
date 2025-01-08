@@ -45,8 +45,8 @@ async def command_download(args: str):
             # magnet_links = re.findall(r'[a-zA-Z0-9]{40}', arg)
             for link in magnet_links:
                 if "&" in link:
-                    l = link.split("&")[0]
-                    args = link.removeprefix(f"{l}&")
+                    l = link.split("&", 1)[0]
+                    args = link.split("&", 1)[1]
                     link = l
                 else:
                     args = ""
@@ -229,7 +229,7 @@ async def command_delete(args: str):
 
 async def command_deep_delete(args: str):
     if args in ["", " "]:
-        return '请添加要删除的torrent，例: "/qb删除 xxxx"'
+        return '请添加要删除的torrent，例: "/qb完全删除 xxxx"'
 
     # 解析列表参数
     select_data = {}
