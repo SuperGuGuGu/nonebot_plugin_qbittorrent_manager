@@ -187,6 +187,9 @@ async def edit_msg(event: Event):
 
 
 async def send(msg):
+    if msg is None:
+        return
+
     if type(msg) is not list:
         msg = [msg]
 
