@@ -40,6 +40,24 @@ menu_data = [
         "func": "删除指定任务",
         "trigger_condition": " ",
         "brief_des": "qb删除 xxx",
+    },
+    {
+        "trigger_method": "qb完全删除",
+        "func": "删除指定任务以及下载的文件",
+        "trigger_condition": " ",
+        "brief_des": "qb完全删除 xxx",
+    },
+    {
+        "trigger_method": "qb修改",
+        "func": "修改分类、文件夹、添加标签",
+        "trigger_condition": " ",
+        "brief_des": "qb修改 xxx",
+    },
+    {
+        "trigger_method": "qb登陆",
+        "func": "在凭证过期后手动登陆",
+        "trigger_condition": " ",
+        "brief_des": "qb登陆",
     }
 ]
 

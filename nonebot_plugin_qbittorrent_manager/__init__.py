@@ -15,8 +15,8 @@ from nonebot_plugin_saa import Image as saaImage, MessageFactory
 from nonebot_plugin_saa import Text as saaText
 
 __plugin_meta__ = PluginMetadata(
-    name="nonebot_plugin_qbittorrent_manager",
-    description="qb管理器",
+    name="qb管理器",
+    description="远程管理qbittorrent",
     usage="/qb帮助",
     type="application",
     # 发布必填，当前有效类型有：`library`（为其他插件编写提供功能），`application`（向机器人用户提供功能）。
