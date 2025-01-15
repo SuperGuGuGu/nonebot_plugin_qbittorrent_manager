@@ -78,7 +78,7 @@ async def download_msg(event: Event):
         await download_cmd.finish()
 
     if event.get_user_id() not in enable_user and enable_user != []:
-        await help_cmd.finish()
+        await download_cmd.finish()
 
     command_prefix = f"{msg.split('qb下载')[0]}qb下载"
     args = msg.removeprefix(command_prefix).removeprefix(" ")
@@ -102,7 +102,7 @@ async def download_msg(event: Event):
         await download_list_cmd.finish()
 
     if event.get_user_id() not in enable_user and enable_user != []:
-        await help_cmd.finish()
+        await download_list_cmd.finish()
 
     command_prefix = f"{msg.split('qb列表')[0]}qb列表"
     args = msg.removeprefix(command_prefix).removeprefix(" ")
@@ -126,7 +126,7 @@ async def download_msg(event: Event):
         await delete_cmd.finish()
 
     if event.get_user_id() not in enable_user and enable_user != []:
-        await help_cmd.finish()
+        await delete_cmd.finish()
 
     command_prefix = f"{msg.split('qb删除')[0]}qb删除"
     args = msg.removeprefix(command_prefix).removeprefix(" ")
@@ -150,7 +150,7 @@ async def download_msg(event: Event):
         await delete_cmd.finish()
 
     if event.get_user_id() not in enable_user and enable_user != []:
-        await help_cmd.finish()
+        await delete_cmd.finish()
 
     command_prefix = f"{msg.split('qb完全删除')[0]}qb完全删除"
     args = msg.removeprefix(command_prefix).removeprefix(" ")
