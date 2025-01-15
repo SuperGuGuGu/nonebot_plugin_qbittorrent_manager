@@ -8,7 +8,7 @@ from nonebot.adapters import Event
 from .tools import save_image
 from .config import Config, menu_data, enable_user
 from .command import command_help, command_download, command_download_list, command_delete, command_edit, \
-    command_deep_delete
+    command_deep_delete, command_login
 
 require("nonebot_plugin_saa")
 from nonebot_plugin_saa import Image as saaImage, MessageFactory
@@ -50,6 +50,20 @@ async def help_msg(event: Event):
 
     await send(msg)
     await help_cmd.finish()
+
+
+login_cmd = on_command("qb登陆", rule=to_me(), priority=10, block=False)
+
+
+@login_cmd.handle()
+async def login_msg(event: Event):
+    if not event.get_type().startswith("message"):
+        await login_cmd.finish()
+    if event.get_user_id() not in enable_user and enable_user != []:
+        await login_cmd.finish()
+    msg = await command_login()
+    await send(msg)
+    await login_cmd.finish()
 
 
 download_cmd = on_command("qb下载", rule=to_me(), priority=10, block=False)

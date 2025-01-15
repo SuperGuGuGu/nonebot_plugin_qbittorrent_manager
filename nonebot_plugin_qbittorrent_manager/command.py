@@ -2,7 +2,7 @@ import re
 from nonebot import logger
 from .config import menu_data, state_name, send_text
 from .draw import draw_torrent_list
-from .qb_api import call_api, get_torrent_list
+from .qb_api import call_api, get_torrent_list, login
 
 
 async def command_help():
@@ -12,6 +12,14 @@ async def command_help():
             continue
         return_msg += f"\n{command['trigger_method']}: {command['func']}"
     return return_msg
+
+
+async def command_login():
+    try:
+        await login()
+        return "登陆成功"
+    except Exception as e:
+        return "登陆失败"
 
 
 async def command_download(args: str):
