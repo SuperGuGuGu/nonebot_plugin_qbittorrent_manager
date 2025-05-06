@@ -1,3 +1,5 @@
+# coding=utf-8
+import html
 import re
 from nonebot import logger
 from .config import menu_data, state_name, send_text
@@ -72,6 +74,7 @@ async def command_download(args: str):
     for url in download_data["urls"]:
         task_data["num"] += 1
         post_data = {"urls": url}
+        tracker_text = ""
         if download_data.get("category") is not None:
             post_data["category"] = download_data.get("category")
         if download_data.get("tag") is not None:
@@ -82,11 +85,31 @@ async def command_download(args: str):
             # 解析链接参数
             # logger.debug(f"解析链接参数: {download_data['urls'][url]}")
             # download_data['urls'][url] = "dn=xxx.mp4"
-            pass
+            for i, parameter in enumerate(download_data["urls"][url].split("&")):
+                name = parameter.split("=", 1)[0]
+                if name == "dn":
+                    # dn = parameter.split("=", 1)[1]
+                    pass
+                if name == "tr":
+                    tracker = parameter.split("=", 1)[1]
+                    tracker_text += tracker + "\n"
+            tracker_text = tracker_text.removesuffix("\n")
+            tracker_text = html.escape(tracker_text)  # 转义文字
         try:
             data = await call_api("/api/v2/torrents/add", post_data=post_data)
             if data.text == "Ok.":
                 task_data["succeed"] += 1
+                if tracker_text != "":
+                    try:
+                        logger.debug("添加tracker_text")
+                        post_data = {"hash": url, "urls": tracker_text}
+                        logger.debug(f"post_data: {post_data}")
+                        data = await call_api("/api/v2/torrents/addTrackers", post_data=post_data)
+                        logger.debug(f"data: {data}")
+                        logger.success("添加tracker_text成功")
+                    except Exception as e:
+                        logger.error(e)
+                        logger.error("添加tracker_text失败")
             else:
                 logger.error(data.text)
                 task_data["error"] += 1

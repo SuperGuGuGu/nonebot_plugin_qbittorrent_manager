@@ -1,3 +1,4 @@
+# coding=utf-8
 from PIL import Image
 from .config import state_name
 from .tools import circle_corner, draw_form

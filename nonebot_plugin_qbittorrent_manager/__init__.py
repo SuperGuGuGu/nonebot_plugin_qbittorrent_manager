@@ -1,3 +1,4 @@
+# coding=utf-8
 import html
 from PIL import Image
 from nonebot import logger, require, on_command

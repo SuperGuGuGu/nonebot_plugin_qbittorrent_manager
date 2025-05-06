@@ -1,5 +1,5 @@
+# coding=utf-8
 import json
-
 import httpx
 from httpx import codes as status_code
 from nonebot import logger

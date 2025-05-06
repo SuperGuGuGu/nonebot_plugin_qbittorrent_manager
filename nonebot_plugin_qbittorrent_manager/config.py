@@ -1,3 +1,5 @@
+# coding=utf-8
+import nonebot
 from nonebot import get_plugin_config, logger
 from pydantic import BaseModel
 from pathlib import Path
@@ -84,6 +86,7 @@ state_name = {
     "None": "未知",  # 未知状态
 }
 
+# 读取配置
 plugin_config = get_plugin_config(Config)
 qb_url = plugin_config.qbm_url
 if not qb_url.startswith("http://") and not qb_url.startswith("https://"):
